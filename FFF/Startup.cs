@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using FFF.Data;
 
 namespace FFF
 {
@@ -24,6 +25,15 @@ namespace FFF
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddControllersWithViews();
+
+		    services.AddDbContext<EventContext>(options =>
+		            options.UseSqlServer(Configuration.GetConnectionString("EventContext")));
+
+		    services.AddDbContext<EmployeeContext>(options =>
+		            options.UseSqlServer(Configuration.GetConnectionString("EmployeeContext")));
+
+		    services.AddDbContext<ReservationContext>(options =>
+		            options.UseSqlServer(Configuration.GetConnectionString("ReservationContext")));
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

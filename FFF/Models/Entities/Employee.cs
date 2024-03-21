@@ -34,19 +34,14 @@ namespace FFF.Models
 		
 		[Required(ErrorMessage = "Phone Number is required")]
 		[Phone(ErrorMessage = "Invalid Phone Number")]
-		[DataType(DataType.PhoneNumber)]
 		[Display(Name = "Phone Number")]
 		public string PhoneNumber { get; set; }
 		
 		[Required(ErrorMessage = "Email Address is required")]
 		[EmailAddress(ErrorMessage = "Invalid Email Address")]
-		[DataType(DataType.EmailAddress)]
 		public string Email { get; set; }
 
 		[Required]
-		[ForeignKey(nameof(Events))]
-		public long EventId { get; set; }
-		[Required]
-        public ICollection<Event> Events { get; set; }
+        public virtual ICollection<Event> Events { get; set; }
 	}
 }

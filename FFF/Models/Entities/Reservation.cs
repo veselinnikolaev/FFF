@@ -19,7 +19,6 @@ namespace FFF.Models
 
 		[Required(ErrorMessage = "Phone Number is required")]
 		[Phone(ErrorMessage = "Ivalid Phone Number")]
-		[DataType(DataType.PhoneNumber)]
 		[Display(Name = "Phone Number")]
 		public string PhoneNumber { get; set; }
 
@@ -28,9 +27,6 @@ namespace FFF.Models
 		public string Note { get; set; }
 		
 		[Required]
-		[ForeignKey(nameof(Event))]
-        public long EventId { get; set; }
-		[Required]
-        public Event Event { get; set; }
+        public virtual Event Event { get; set; }
 	}
 }
