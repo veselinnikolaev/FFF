@@ -34,9 +34,16 @@ namespace FFF.Models
 		[DataType(DataType.Text)]
 		public string Description { get; set; }
 		
-		[ForeignKey("")]
-		public List<Employee> Employees { get; set; }
+		[Required]
+		[ForeignKey(nameof(Employees))]
+		public long EmployeeId { get; set; }
+		[Required]
+        public ICollection<Employee> Employees { get; set; }
 
-		public List<Reservation> Reservations { get; set; }
+		[Required]
+		[ForeignKey(nameof(Reservations))]
+		public long ReservationId { get; set; }
+		[Required]
+        public ICollection<Reservation> Reservations { get; set; }
 	}
 }

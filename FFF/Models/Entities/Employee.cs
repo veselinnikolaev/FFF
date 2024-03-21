@@ -43,8 +43,10 @@ namespace FFF.Models
 		[DataType(DataType.EmailAddress)]
 		public string Email { get; set; }
 
-		public List<Reservation> Reservations { get; set; }
-
-		public List<Event> Events { get; set; }
+		[Required]
+		[ForeignKey(nameof(Events))]
+		public long EventId { get; set; }
+		[Required]
+        public ICollection<Event> Events { get; set; }
 	}
 }

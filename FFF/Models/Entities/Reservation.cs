@@ -27,13 +27,10 @@ namespace FFF.Models
 		[DataType(DataType.Text)]
 		public string Note { get; set; }
 		
-		/*[Required(ErrorMessage = "Date is required")]
-		[DataType(DataType.DateTime)]
-		[Display(Name = "Date of Reservation")]
-		public DateTime Date { get; set; }*/
-		
-		[ForeignKey("Event")]
-		public int EventId { get; set; }
-		public virtual Event Event { get; set; }
+		[Required]
+		[ForeignKey(nameof(Event))]
+        public long EventId { get; set; }
+		[Required]
+        public Event Event { get; set; }
 	}
 }
