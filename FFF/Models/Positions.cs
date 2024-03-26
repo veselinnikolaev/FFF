@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace FFF.Models
 {
-	public enum Position
+	public enum Positions
 	{
 		Bartender, Owner, Doorperson, Bouncer, Server, Cashier
 	}

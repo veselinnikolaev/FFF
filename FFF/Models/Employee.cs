@@ -29,8 +29,8 @@ namespace FFF.Models
 		public DateTime BirthDate { get; set; }
 		
 		[Required(ErrorMessage = "Position is required")]
-		[EnumDataType(typeof(Position))]
-		public Position Position { get; set; }
+		[EnumDataType(typeof(Positions))]
+		public Positions Position { get; set; }
 		
 		[Required(ErrorMessage = "Phone Number is required")]
 		[Phone(ErrorMessage = "Invalid Phone Number")]

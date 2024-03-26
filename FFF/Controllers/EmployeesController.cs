@@ -12,9 +12,9 @@ namespace FFF.Controllers
 {
     public class EmployeesController : Controller
     {
-        private readonly EmployeeContext _context;
+        private readonly FFFContext _context;
 
-        public EmployeesController(EmployeeContext context)
+        public EmployeesController(FFFContext context)
         {
             _context = context;
         }
@@ -22,7 +22,7 @@ namespace FFF.Controllers
         // GET: Employees
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Employee.ToListAsync());
+            return View(await _context.Employees.ToListAsync());
         }
 
         // GET: Employees/Details/5
@@ -33,7 +33,7 @@ namespace FFF.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employee
+            var employee = await _context.Employees
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (employee == null)
             {
@@ -73,7 +73,7 @@ namespace FFF.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employee.FindAsync(id);
+            var employee = await _context.Employees.FindAsync(id);
             if (employee == null)
             {
                 return NotFound();
@@ -124,7 +124,7 @@ namespace FFF.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employee
+            var employee = await _context.Employees
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (employee == null)
             {
@@ -139,15 +139,15 @@ namespace FFF.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            var employee = await _context.Employee.FindAsync(id);
-            _context.Employee.Remove(employee);
+            var employee = await _context.Employees.FindAsync(id);
+            _context.Employees.Remove(employee);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool EmployeeExists(long id)
         {
-            return _context.Employee.Any(e => e.Id == id);
+            return _context.Employees.Any(e => e.Id == id);
         }
     }
 }

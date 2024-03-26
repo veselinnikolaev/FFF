@@ -26,7 +26,11 @@ namespace FFF.Models
 		[DataType(DataType.Text)]
 		public string Note { get; set; }
 		
-		[Required]
-        public virtual Event Event { get; set; }
+		[Required(ErrorMessage = "Event selection is required")]
+		[ForeignKey(nameof(Event))]
+		[Display(Name = "Event")]
+        public long EventId { get; set; }
+
+        public Event Event { get; set; }
 	}
 }

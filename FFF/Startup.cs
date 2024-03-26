@@ -26,14 +26,8 @@ namespace FFF
 		{
 			services.AddControllersWithViews();
 
-		    services.AddDbContext<EventContext>(options =>
-		            options.UseSqlServer(Configuration.GetConnectionString("EventContext")));
-
-		    services.AddDbContext<EmployeeContext>(options =>
-		            options.UseSqlServer(Configuration.GetConnectionString("EmployeeContext")));
-
-		    services.AddDbContext<ReservationContext>(options =>
-		            options.UseSqlServer(Configuration.GetConnectionString("ReservationContext")));
+		    services.AddDbContext<FFFContext>(options =>
+		            options.UseSqlServer(Configuration.GetConnectionString("FFFContext")));
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

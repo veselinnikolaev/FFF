@@ -12,9 +12,9 @@ namespace FFF.Controllers
 {
     public class EventsController : Controller
     {
-        private readonly EventContext _context;
+        private readonly FFFContext _context;
 
-        public EventsController(EventContext context)
+        public EventsController(FFFContext context)
         {
             _context = context;
         }
@@ -22,7 +22,7 @@ namespace FFF.Controllers
         // GET: Events
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Event.ToListAsync());
+            return View(await _context.Events.ToListAsync());
         }
 
         // GET: Events/Details/5
@@ -33,7 +33,7 @@ namespace FFF.Controllers
                 return NotFound();
             }
 
-            var @event = await _context.Event
+            var @event = await _context.Events
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (@event == null)
             {
@@ -73,7 +73,7 @@ namespace FFF.Controllers
                 return NotFound();
             }
 
-            var @event = await _context.Event.FindAsync(id);
+            var @event = await _context.Events.FindAsync(id);
             if (@event == null)
             {
                 return NotFound();
@@ -124,7 +124,7 @@ namespace FFF.Controllers
                 return NotFound();
             }
 
-            var @event = await _context.Event
+            var @event = await _context.Events
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (@event == null)
             {
@@ -139,15 +139,15 @@ namespace FFF.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            var @event = await _context.Event.FindAsync(id);
-            _context.Event.Remove(@event);
+            var @event = await _context.Events.FindAsync(id);
+            _context.Events.Remove(@event);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool EventExists(long id)
         {
-            return _context.Event.Any(e => e.Id == id);
+            return _context.Events.Any(e => e.Id == id);
         }
     }
 }
