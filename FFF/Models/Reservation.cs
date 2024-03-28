@@ -27,10 +27,11 @@ namespace FFF.Models
 		public string Note { get; set; }
 		
 		[Required(ErrorMessage = "Event selection is required")]
-		[ForeignKey(nameof(Event))]
+		[ForeignKey(nameof(Event))] //Foreign key One to One for the event
 		[Display(Name = "Event")]
         public long EventId { get; set; }
 
+		//Foreign key One to One
         public Event Event { get; set; }
 	}
 }

@@ -41,7 +41,7 @@ namespace FFF.Models
 		[EmailAddress(ErrorMessage = "Invalid Email Address")]
 		public string Email { get; set; }
 
-		[Required]
-        public virtual ICollection<Event> Events { get; set; }
+		[Required] //Foreign key Many to Many
+        public ICollection<EventEmployee> EventEmployees { get; set; }
 	}
 }

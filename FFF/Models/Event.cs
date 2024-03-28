@@ -34,10 +34,10 @@ namespace FFF.Models
 		[DataType(DataType.Text)]
 		public string Description { get; set; }
 		
-		[Required]
-        public virtual ICollection<Employee> Employees { get; set; }
+		[Required] //Foreign key Many to Many
+        public ICollection<EventEmployee> EventEmployees { get; set; }
 
-		[Required]
+		[Required] //Foreign key One to Many
         public virtual ICollection<Reservation> Reservations { get; set; }
 	}
 }
