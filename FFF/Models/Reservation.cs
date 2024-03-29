@@ -31,7 +31,7 @@ namespace FFF.Models
 		[Display(Name = "Event")]
         public long EventId { get; set; }
 
-		//Foreign key One to One
+		// Many to One
         public Event Event { get; set; }
 	}
 }

@@ -1,5 +1,5 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 
 namespace FFF.Migrations
 {
@@ -52,13 +52,13 @@ namespace FFF.Migrations
                 {
                     table.PrimaryKey("PK_EmployeeEvent", x => new { x.EmployeeId, x.EventId });
                     table.ForeignKey(
-                        name: "FK_EmployeeEvent_Employees_EmployeesId",
+                        name: "FK_EmployeeEvent_Employees_EmployeeId",
                         column: x => x.EmployeeId,
                         principalTable: "Employees",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_EmployeeEvent_Events_EventsId",
+                        name: "FK_EmployeeEvent_Events_EventId",
                         column: x => x.EventId,
                         principalTable: "Events",
                         principalColumn: "Id",
@@ -88,9 +88,9 @@ namespace FFF.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_EmployeeEvent_EventsId",
+                name: "IX_EmployeeEvent_EventId",
                 table: "EmployeeEvent",
-                column: "EventsId");
+                column: "EventId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reservations_EventId",

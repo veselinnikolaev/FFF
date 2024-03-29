@@ -9,7 +9,7 @@ namespace FFF.Data
 {
     public class FFFContext : DbContext
     {
-        public FFFContext (DbContextOptions<FFFContext> options)
+        public FFFContext(DbContextOptions<FFFContext> options)
             : base(options)
         {
         }

@@ -40,8 +40,7 @@ namespace FFF.Models
 		[Required(ErrorMessage = "Email Address is required")]
 		[EmailAddress(ErrorMessage = "Invalid Email Address")]
 		public string Email { get; set; }
-
-		[Required] //Foreign key Many to Many
+		// many to many
         public ICollection<EmployeeEvent> EmployeeEvents { get; set; }
 	}
 }

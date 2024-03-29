@@ -10,146 +10,151 @@ using FFF.Models;
 
 namespace FFF.Controllers
 {
-	public class ReservationsController : Controller
-	{
-		private readonly FFFContext _context;
+    public class ReservationsController : Controller
+    {
+        private readonly FFFContext _context;
 
-		public ReservationsController(FFFContext context)
-		{
-			this._context = context;
-		}
+        public ReservationsController(FFFContext context)
+        {
+            _context = context;
+        }
 
-		// GET: Reservations
-		public async Task<IActionResult> Index()
-		{
-			return View(await _context.Reservations.ToListAsync());
-		}
+        // GET: Reservations
+        public async Task<IActionResult> Index()
+        {
+            var fFFContext = _context.Reservations.Include(r => r.Event);
+            return View(await fFFContext.ToListAsync());
+        }
 
-		// GET: Reservations/Details/5
-		public async Task<IActionResult> Details(long? id)
-		{
-			if (id == null)
-			{
-				return NotFound();
-			}
+        // GET: Reservations/Details/5
+        public async Task<IActionResult> Details(long? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-			var reservation = await _context.Reservations
-				.FirstOrDefaultAsync(m => m.Id == id);
-			if (reservation == null)
-			{
-				return NotFound();
-			}
+            var reservation = await _context.Reservations
+                .Include(r => r.Event)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (reservation == null)
+            {
+                return NotFound();
+            }
 
-			return View(reservation);
-		}
+            return View(reservation);
+        }
 
-		// GET: Reservations/Create
-		public IActionResult Create()
-		{
-			var events = _context.Events.ToList();
-			ViewBag.Events = events;
-			return View();
-		}
+        // GET: Reservations/Create
+        public IActionResult Create()
+        {
+            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Description");
+            return View();
+        }
 
-		// POST: Reservations/Create
-		// To protect from overposting attacks, enable the specific properties you want to bind to.
-		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("Id,Name,PhoneNumber,Note,EventId")] Reservation reservation)
-		{
-			if (ModelState.IsValid)
-			{
-				_context.Add(reservation);
-				await _context.SaveChangesAsync();
-				return RedirectToAction(nameof(Index));
-			}
-			return View(reservation);
-		}
+        // POST: Reservations/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,Name,PhoneNumber,Note,EventId")] Reservation reservation)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(reservation);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Description", reservation.EventId);
+            return View(reservation);
+        }
 
-		// GET: Reservations/Edit/5
-		public async Task<IActionResult> Edit(long? id)
-		{
-			if (id == null)
-			{
-				return NotFound();
-			}
+        // GET: Reservations/Edit/5
+        public async Task<IActionResult> Edit(long? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-			var reservation = await _context.Reservations.FindAsync(id);
-			if (reservation == null)
-			{
-				return NotFound();
-			}
-			return View(reservation);
-		}
+            var reservation = await _context.Reservations.FindAsync(id);
+            if (reservation == null)
+            {
+                return NotFound();
+            }
+            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Description", reservation.EventId);
+            return View(reservation);
+        }
 
-		// POST: Reservations/Edit/5
-		// To protect from overposting attacks, enable the specific properties you want to bind to.
-		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(long id, [Bind("Id,Name,PhoneNumber,Note")] Reservation reservation)
-		{
-			if (id != reservation.Id)
-			{
-				return NotFound();
-			}
+        // POST: Reservations/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,PhoneNumber,Note,EventId")] Reservation reservation)
+        {
+            if (id != reservation.Id)
+            {
+                return NotFound();
+            }
 
-			if (ModelState.IsValid)
-			{
-				try
-				{
-					_context.Update(reservation);
-					await _context.SaveChangesAsync();
-				}
-				catch (DbUpdateConcurrencyException)
-				{
-					if (!ReservationExists(reservation.Id))
-					{
-						return NotFound();
-					}
-					else
-					{
-						throw;
-					}
-				}
-				return RedirectToAction(nameof(Index));
-			}
-			return View(reservation);
-		}
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(reservation);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ReservationExists(reservation.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Description", reservation.EventId);
+            return View(reservation);
+        }
 
-		// GET: Reservations/Delete/5
-		public async Task<IActionResult> Delete(long? id)
-		{
-			if (id == null)
-			{
-				return NotFound();
-			}
+        // GET: Reservations/Delete/5
+        public async Task<IActionResult> Delete(long? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-			var reservation = await _context.Reservations
-				.FirstOrDefaultAsync(m => m.Id == id);
-			if (reservation == null)
-			{
-				return NotFound();
-			}
+            var reservation = await _context.Reservations
+                .Include(r => r.Event)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (reservation == null)
+            {
+                return NotFound();
+            }
 
-			return View(reservation);
-		}
+            return View(reservation);
+        }
 
-		// POST: Reservations/Delete/5
-		[HttpPost, ActionName("Delete")]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> DeleteConfirmed(long id)
-		{
-			var reservation = await _context.Reservations.FindAsync(id);
-			_context.Reservations.Remove(reservation);
-			await _context.SaveChangesAsync();
-			return RedirectToAction(nameof(Index));
-		}
+        // POST: Reservations/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(long id)
+        {
+            var reservation = await _context.Reservations.FindAsync(id);
+            _context.Reservations.Remove(reservation);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
 
-		private bool ReservationExists(long id)
-		{
-			return _context.Reservations.Any(e => e.Id == id);
-		}
-	}
+        private bool ReservationExists(long id)
+        {
+            return _context.Reservations.Any(e => e.Id == id);
+        }
+    }
 }

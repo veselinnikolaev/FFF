@@ -33,11 +33,9 @@ namespace FFF.Models
 		[MaxLength(500, ErrorMessage = "Username cannot exceed 500 characters")]
 		[DataType(DataType.Text)]
 		public string Description { get; set; }
-		
-		[Required] //Foreign key Many to Many
+		// many to many
         public ICollection<EmployeeEvent> EmployeeEvents { get; set; }
-
-		[Required] //Foreign key One to Many
+		// one to many
         public virtual ICollection<Reservation> Reservations { get; set; }
 	}
 }
