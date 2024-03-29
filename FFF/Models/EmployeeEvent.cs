@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace FFF.Models
 {
-    [Table("EventsEmployees")]
-	public class EventEmployee
+    [Table("EmployeeEvent")]
+	public class EmployeeEvent
 	{
         [Key]
         [ForeignKey("Event")]

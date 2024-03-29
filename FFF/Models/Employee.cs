@@ -42,6 +42,6 @@ namespace FFF.Models
 		public string Email { get; set; }
 
 		[Required] //Foreign key Many to Many
-        public ICollection<EventEmployee> EventEmployees { get; set; }
+        public ICollection<EmployeeEvent> EmployeeEvents { get; set; }
 	}
 }

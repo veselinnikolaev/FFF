@@ -20,7 +20,7 @@ namespace FFF.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<EventEmployee>()
+            modelBuilder.Entity<EmployeeEvent>()
                 .HasKey(ee => new { ee.EventId, ee.EmployeeId });
 
             modelBuilder.Entity<Reservation>()
@@ -33,14 +33,14 @@ namespace FFF.Data
                 .WithOne(r => r.Event)
                 .HasForeignKey(r => r.EventId);
 
-            modelBuilder.Entity<EventEmployee>()
+            modelBuilder.Entity<EmployeeEvent>()
                 .HasOne(ee => ee.Event)
-                .WithMany(e => e.EventEmployees)
+                .WithMany(e => e.EmployeeEvents)
                 .HasForeignKey(ee => ee.EventId);
 
-            modelBuilder.Entity<EventEmployee>()
+            modelBuilder.Entity<EmployeeEvent>()
                 .HasOne(ee => ee.Employee)
-                .WithMany(emp => emp.EventEmployees)
+                .WithMany(emp => emp.EmployeeEvents)
                 .HasForeignKey(ee => ee.EmployeeId);
         }
     }

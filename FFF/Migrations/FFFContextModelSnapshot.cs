@@ -19,7 +19,7 @@ namespace FFF.Migrations
                 .HasAnnotation("ProductVersion", "5.0.17")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("EventEmployee", b =>
+            modelBuilder.Entity("EmployeeEvent", b =>
                 {
                     b.Property<long>("EmployeeId")
                         .HasColumnType("bigint");
@@ -31,7 +31,7 @@ namespace FFF.Migrations
 
                     b.HasIndex("EventId");
 
-                    b.ToTable("EventsEmployees");
+                    b.ToTable("EmployeeEvent");
                 });
 
             modelBuilder.Entity("FFF.Models.Employee", b =>
@@ -128,7 +128,7 @@ namespace FFF.Migrations
                     b.ToTable("Reservations");
                 });
 
-            modelBuilder.Entity("EventEmployee", b =>
+            modelBuilder.Entity("EmployeeEvent", b =>
                 {
                     b.HasOne("FFF.Models.Employee", null)
                         .WithMany()

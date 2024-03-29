@@ -42,7 +42,7 @@ namespace FFF.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EventsEmployees",
+                name: "EmployeeEvent",
                 columns: table => new
                 {
                     EmployeeId = table.Column<long>(type: "bigint", nullable: false),
