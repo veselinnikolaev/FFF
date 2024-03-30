@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using FFF.Models;
+using System.Configuration;
 
 namespace FFF.Data
 {
@@ -20,6 +21,14 @@ namespace FFF.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Event>()
+                .Property(e => e.TicketPrice)
+                .HasColumnType("decimal(18, 2)");
+
+            modelBuilder.Entity<Employee>()
+                .Property(e => e.BirthDate)
+                .HasColumnType("date");
+
             modelBuilder.Entity<EmployeeEvent>()
                 .HasKey(ee => new { ee.EventId, ee.EmployeeId });
 

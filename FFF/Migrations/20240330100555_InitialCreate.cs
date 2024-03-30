@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FFF.Migrations
 {
@@ -45,12 +45,12 @@ namespace FFF.Migrations
                 name: "EmployeeEvent",
                 columns: table => new
                 {
-                    EmployeeId = table.Column<long>(type: "bigint", nullable: false),
-                    EventId = table.Column<long>(type: "bigint", nullable: false)
+                    EventId = table.Column<long>(type: "bigint", nullable: false),
+                    EmployeeId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EmployeeEvent", x => new { x.EmployeeId, x.EventId });
+                    table.PrimaryKey("PK_EmployeeEvent", x => new { x.EventId, x.EmployeeId });
                     table.ForeignKey(
                         name: "FK_EmployeeEvent_Employees_EmployeeId",
                         column: x => x.EmployeeId,
@@ -88,9 +88,9 @@ namespace FFF.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_EmployeeEvent_EventId",
+                name: "IX_EmployeeEvent_EmployeeId",
                 table: "EmployeeEvent",
-                column: "EventId");
+                column: "EmployeeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reservations_EventId",
