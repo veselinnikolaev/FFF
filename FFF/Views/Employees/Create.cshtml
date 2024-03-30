@@ -30,7 +30,7 @@
             <div class="form-group">
                 <label asp-for="Position" class="control-label"></label>
                 <select asp-for="Position" class="form-control">
-                    <option value="">Choose position</option> <!-- Default option -->
+                    <option value="">-- Select Position --</option> <!-- Default option -->
                     @foreach (var position in Enum.GetValues(typeof(Positions)))
                     {
                         <option value="@position">@position</option>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FFF.Validation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -15,6 +16,7 @@ namespace FFF.Models
 
 		[Required(ErrorMessage = "Date is required")]
 		[DataType(DataType.DateTime)]
+		[DateGreaterThanNow(ErrorMessage = "Date of Event must be greater than current date")]
 		[Display(Name = "Date of Event")]
 		public DateTime Date { get; set; }
 

@@ -63,6 +63,8 @@ namespace FFF.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(reservation);
+                var @event = await _context.Events.FindAsync(reservation.EventId);
+                @event.Reservations.Add(reservation);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -83,6 +85,7 @@ namespace FFF.Controllers
             {
                 return NotFound();
             }
+            ViewBag.Events = _context.Events.ToList();
             ViewData["EventId"] = new SelectList(_context.Events, "Id", "Description", reservation.EventId);
             return View(reservation);
         }
@@ -103,7 +106,46 @@ namespace FFF.Controllers
             {
                 try
                 {
-                    _context.Update(reservation);
+                    // Retrieve the original reservation including its associated event
+                    var originalReservation = await _context.Reservations
+                        .Include(r => r.Event)
+                        .FirstOrDefaultAsync(r => r.Id == reservation.Id);
+
+                    if (originalReservation == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Update the reservation properties except EventId
+                    originalReservation.Name = reservation.Name;
+                    originalReservation.PhoneNumber = reservation.PhoneNumber;
+                    originalReservation.Note = reservation.Note;
+
+                    // If the eventId has changed
+                    if (originalReservation.EventId != reservation.EventId)
+                    {
+                        // Remove the reservation from the previous event's collection
+                        if (originalReservation.Event != null)
+                        {
+                            originalReservation.Event.Reservations.Remove(originalReservation);
+                        }
+
+                        // Retrieve the new event
+                        var newEvent = await _context.Events.FindAsync(reservation.EventId);
+
+                        if (newEvent != null)
+                        {
+                            // Add the reservation to the new event's collection
+                            newEvent.Reservations.Add(originalReservation);
+                        }
+
+                        // Update the EventId of the reservation
+                        originalReservation.EventId = reservation.EventId;
+                    }
+
+                    // Update the reservation in the Reservations table
+                    _context.Update(originalReservation);
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -149,6 +191,8 @@ namespace FFF.Controllers
         {
             var reservation = await _context.Reservations.FindAsync(id);
             _context.Reservations.Remove(reservation);
+            var @event = await _context.Events.FindAsync(reservation.EventId);
+            @event.Reservations.Remove(reservation);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

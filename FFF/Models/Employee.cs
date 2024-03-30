@@ -24,7 +24,7 @@ namespace FFF.Models
 		public string LastName { get; set; }
 		
 		[Required(ErrorMessage = "Date of Birth is required")]
-		[DataType(DataType.DateTime)]
+		[DataType(DataType.Date)]
 		[Display(Name = "Date of Birth")]
 		public DateTime BirthDate { get; set; }
 		
