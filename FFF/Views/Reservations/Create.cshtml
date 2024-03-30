@@ -27,17 +27,17 @@
                 <input asp-for="Note" class="form-control" />
                 <span asp-validation-for="Note" class="text-danger"></span>
             </div>
-            @*<div class="form-group">
-            <label asp-for="EventId" class="control-label"></label>
-            <select asp-for="EventId" class="form-control">
-            <option value="">-- Select Event --</option>
-            @foreach (var @event in ViewBag.Events)
-            {
-            <option value="@event.Id">@event.Name</option>
-            }
-            </select>
-            <span asp-validation-for="EventId" class="text-danger"></span>
-            </div>*@
+            <div class="form-group">
+                <label asp-for="EventId" class="control-label"></label>
+                <select asp-for="EventId" class="form-control">
+                    <option value="">-- Select Event --</option>
+                    @foreach (var _event in ViewBag.Events)
+                    {
+                        <option value="@_event.Id">@_event.SingerName</option>
+                    }
+                </select>
+                <span asp-validation-for="EventId" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

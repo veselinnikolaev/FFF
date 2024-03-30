@@ -48,6 +48,7 @@ namespace FFF.Controllers
         // GET: Reservations/Create
         public IActionResult Create()
         {
+            ViewBag.Events = _context.Events.ToList();
             ViewData["EventId"] = new SelectList(_context.Events, "Id", "Description");
             return View();
         }
