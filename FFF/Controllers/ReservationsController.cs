@@ -62,8 +62,10 @@ namespace FFF.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(reservation);
+                
                 var @event = await _context.Events.FindAsync(reservation.EventId);
                 @event.Reservations.Add(reservation);
+                
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

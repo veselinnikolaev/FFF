@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -55,11 +54,26 @@ namespace FFF.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Date,SingerName,TicketPrice,Description,Employees")] Event @event)
+        public async Task<IActionResult> Create([Bind("Id,Date,SingerName,TicketPrice,Description")] Event @event, List<long> employeeIds)
         {
             if (ModelState.IsValid)
-            {      
+            {
                 _context.Add(@event);
+
+                if (employeeIds != null)
+                {
+                    // Retrieve the corresponding employees and add them to the event
+                    foreach (var employeeId in employeeIds)
+                    {
+                        var employee = await _context.Employees.FindAsync(employeeId);
+                        if (employee != null)
+                        {
+                            employee.Events.Add(@event);
+                            @event.Employees.Add(employee);
+                        }
+                    }
+                }
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -80,7 +94,8 @@ namespace FFF.Controllers
             {
                 return NotFound();
             }
-            ViewData["Employees"] = new MultiSelectList(_context.Employees, "Id", "ViewData", @event.Employees);
+            var selectedEmployeeIds = @event.Employees.Select(e => e.Id).ToList();
+            ViewData["Employees"] = new MultiSelectList(_context.Employees, "Id", "ViewData", selectedEmployeeIds);
             return View(@event);
         }
 
@@ -89,7 +104,7 @@ namespace FFF.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Date,SingerName,TicketPrice,Description")] Event @event)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Date,SingerName,TicketPrice,Description")] Event @event, List<long> employeeIds)
         {
             if (id != @event.Id)
             {
@@ -100,7 +115,41 @@ namespace FFF.Controllers
             {
                 try
                 {
+                    var originalEvent = await _context.Events.Include(e => e.Employees).FirstOrDefaultAsync(e => e.Id == @event.Id);
+
+                    if (originalEvent == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Update the event properties in the context
                     _context.Update(@event);
+
+                    // Remove employees that are no longer selected
+                    foreach (var employee in originalEvent.Employees.ToList())
+                    {
+                        if (employeeIds == null || !employeeIds.Contains(employee.Id))
+                        {
+                            originalEvent.Employees.Remove(employee);
+                        }
+                    }
+
+                    // Add new employees selected
+                    if (employeeIds != null)
+                    {
+                        foreach (var employeeId in employeeIds)
+                        {
+                            if (!originalEvent.Employees.Any(e => e.Id == employeeId))
+                            {
+                                var employee = await _context.Employees.FindAsync(employeeId);
+                                if (employee != null)
+                                {
+                                    originalEvent.Employees.Add(employee);
+                                }
+                            }
+                        }
+                    }
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -116,7 +165,7 @@ namespace FFF.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Employees"] = new MultiSelectList(_context.Employees, "Id", "ViewData", @event.Employees);
+            ViewData["Employees"] = new MultiSelectList(_context.Employees, "Id", "ViewData", employeeIds);
             return View(@event);
         }
 
@@ -134,7 +183,7 @@ namespace FFF.Controllers
             {
                 return NotFound();
             }
-            
+
             return View(@event);
         }
 
@@ -143,7 +192,22 @@ namespace FFF.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            var @event = await _context.Events.FindAsync(id);
+            var @event = await _context.Events
+        .Include(e => e.Employees)  // Include related employees
+        .FirstOrDefaultAsync(e => e.Id == id);
+
+            if (@event == null)
+            {
+                return NotFound();
+            }
+
+            // Remove associated relationships with employees
+            foreach (var employee in @event.Employees.ToList())
+            {
+                @event.Employees.Remove(employee);
+            }
+
+            // Now remove the event itself
             _context.Events.Remove(@event);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
