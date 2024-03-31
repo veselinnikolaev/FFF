@@ -46,6 +46,7 @@ namespace FFF.Controllers
         // GET: Events/Create
         public IActionResult Create()
         {
+            ViewData["Employees"] = new MultiSelectList(_context.Employees, "Id", "ViewData");
             return View();
         }
 
@@ -54,14 +55,15 @@ namespace FFF.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Date,SingerName,TicketPrice,Description")] Event @event)
+        public async Task<IActionResult> Create([Bind("Id,Date,SingerName,TicketPrice,Description,Employees")] Event @event)
         {
             if (ModelState.IsValid)
-            {
+            {      
                 _context.Add(@event);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["Employees"] = new MultiSelectList(_context.Employees, "Id", "ViewData");
             return View(@event);
         }
 
@@ -78,6 +80,7 @@ namespace FFF.Controllers
             {
                 return NotFound();
             }
+            ViewData["Employees"] = new MultiSelectList(_context.Employees, "Id", "ViewData", @event.Employees);
             return View(@event);
         }
 
@@ -113,6 +116,7 @@ namespace FFF.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["Employees"] = new MultiSelectList(_context.Employees, "Id", "ViewData", @event.Employees);
             return View(@event);
         }
 
@@ -130,7 +134,7 @@ namespace FFF.Controllers
             {
                 return NotFound();
             }
-
+            
             return View(@event);
         }
 

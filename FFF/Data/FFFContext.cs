@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using FFF.Models;
 using System.Configuration;
+using Microsoft.Extensions.Hosting;
 
 namespace FFF.Data
 {
@@ -42,15 +43,19 @@ namespace FFF.Data
                 .WithOne(r => r.Event)
                 .HasForeignKey(r => r.EventId);
 
-            modelBuilder.Entity<EmployeeEvent>()
-                .HasOne(ee => ee.Event)
-                .WithMany(e => e.EmployeeEvents)
-                .HasForeignKey(ee => ee.EventId);
+            modelBuilder.Entity<Employee>()
+                .HasMany(e => e.Events)
+                .WithMany(e => e.Employees)
+                .UsingEntity<EmployeeEvent>(
+                    x => x.HasOne<Event>(e => e.Event).WithMany(e => e.EmployeeEvents),
+                    y => y.HasOne<Employee>(e => e.Employee).WithMany(e => e.EmployeeEvents));
 
-            modelBuilder.Entity<EmployeeEvent>()
-                .HasOne(ee => ee.Employee)
-                .WithMany(emp => emp.EmployeeEvents)
-                .HasForeignKey(ee => ee.EmployeeId);
+            modelBuilder.Entity<Event>()
+                .HasMany(emp => emp.Employees)
+                .WithMany(emp => emp.Events)
+                .UsingEntity<EmployeeEvent>(
+                    x => x.HasOne<Employee>(e => e.Employee).WithMany(e => e.EmployeeEvents),
+                    y => y.HasOne<Event>(e => e.Event).WithMany(e => e.EmployeeEvents));
         }
     }
 }

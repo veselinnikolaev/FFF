@@ -48,8 +48,7 @@ namespace FFF.Controllers
         // GET: Reservations/Create
         public IActionResult Create()
         {
-            ViewBag.Events = _context.Events.ToList();
-            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Description");
+            ViewData["EventId"] = new SelectList(_context.Events, "Id", "ViewData");
             return View();
         }
 
@@ -68,7 +67,7 @@ namespace FFF.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Description", reservation.EventId);
+            ViewData["EventId"] = new SelectList(_context.Events, "Id", "ViewData", reservation.EventId);
             return View(reservation);
         }
 
@@ -85,8 +84,7 @@ namespace FFF.Controllers
             {
                 return NotFound();
             }
-            ViewBag.Events = _context.Events.ToList();
-            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Description", reservation.EventId);
+            ViewData["EventId"] = new SelectList(_context.Events, "Id", "ViewData", reservation.EventId);
             return View(reservation);
         }
 
@@ -161,7 +159,7 @@ namespace FFF.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Description", reservation.EventId);
+            ViewData["EventId"] = new SelectList(_context.Events, "Id", "ViewData", reservation.EventId);
             return View(reservation);
         }
 

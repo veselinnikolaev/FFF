@@ -35,6 +35,10 @@ namespace FFF.Models
 		[MaxLength(500, ErrorMessage = "Username cannot exceed 500 characters")]
 		[DataType(DataType.Text)]
 		public string Description { get; set; }
+
+		[NotMapped]
+		public string ViewData { get { return SingerName + " | " + TicketPrice + "$" + " - " + Date;} }
+		public ICollection<Employee> Employees { get; set; }
 		// many to many
         public ICollection<EmployeeEvent> EmployeeEvents { get; set; }
 		// one to many

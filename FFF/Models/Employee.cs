@@ -40,6 +40,10 @@ namespace FFF.Models
 		[Required(ErrorMessage = "Email Address is required")]
 		[EmailAddress(ErrorMessage = "Invalid Email Address")]
 		public string Email { get; set; }
+
+		[NotMapped]
+		public string ViewData { get { return FirstName + " " + LastName + " - " + Position.ToString(); } }
+		public ICollection<Event> Events { get; set; }
 		// many to many
         public ICollection<EmployeeEvent> EmployeeEvents { get; set; }
 	}

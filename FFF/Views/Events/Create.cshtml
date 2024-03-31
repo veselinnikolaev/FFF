@@ -33,6 +33,16 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Employees" class="control-label"></label>
+                <select asp-for="Employees" class="form-control" multiple>
+                    @foreach (var item in (IEnumerable<SelectListItem>)ViewData["Employees"])
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
+                </select>
+                <span asp-validation-for="Employees" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
