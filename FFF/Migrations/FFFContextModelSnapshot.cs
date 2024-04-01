@@ -19,6 +19,21 @@ namespace FFF.Migrations
                 .HasAnnotation("ProductVersion", "5.0.17")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("EmployeeEvent", b =>
+                {
+                    b.Property<long>("EmployeesId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("EventsId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("EmployeesId", "EventsId");
+
+                    b.HasIndex("EmployeesId", "EventsId");
+
+                    b.ToTable("EmployeeEvent");
+                });
+
             modelBuilder.Entity("FFF.Models.Employee", b =>
                 {
                     b.Property<long>("Id")
@@ -53,21 +68,6 @@ namespace FFF.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Employees");
-                });
-
-            modelBuilder.Entity("FFF.Models.EmployeeEvent", b =>
-                {
-                    b.Property<long>("EventId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("EmployeeId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("EventId", "EmployeeId");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.ToTable("EmployeeEvent");
                 });
 
             modelBuilder.Entity("FFF.Models.Event", b =>
@@ -128,23 +128,19 @@ namespace FFF.Migrations
                     b.ToTable("Reservations");
                 });
 
-            modelBuilder.Entity("FFF.Models.EmployeeEvent", b =>
+            modelBuilder.Entity("EmployeeEvent", b =>
                 {
-                    b.HasOne("FFF.Models.Employee", "Employee")
-                        .WithMany("EmployeeEvents")
-                        .HasForeignKey("EmployeeId")
+                    b.HasOne("FFF.Models.Employee", null)
+                        .WithMany()
+                        .HasForeignKey("EmployeesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FFF.Models.Event", "Event")
-                        .WithMany("EmployeeEvents")
-                        .HasForeignKey("EventId")
+                    b.HasOne("FFF.Models.Event", null)
+                        .WithMany()
+                        .HasForeignKey("EventsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Employee");
-
-                    b.Navigation("Event");
                 });
 
             modelBuilder.Entity("FFF.Models.Reservation", b =>
@@ -158,15 +154,8 @@ namespace FFF.Migrations
                     b.Navigation("Event");
                 });
 
-            modelBuilder.Entity("FFF.Models.Employee", b =>
-                {
-                    b.Navigation("EmployeeEvents");
-                });
-
             modelBuilder.Entity("FFF.Models.Event", b =>
                 {
-                    b.Navigation("EmployeeEvents");
-
                     b.Navigation("Reservations");
                 });
 #pragma warning restore 612, 618

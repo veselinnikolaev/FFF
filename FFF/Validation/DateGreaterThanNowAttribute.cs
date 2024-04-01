@@ -11,7 +11,7 @@ namespace FFF.Validation
 
             if (currentValue < DateTime.Now)
             {
-                return new ValidationResult(ErrorMessage = "Date must be greater than current date.");
+                return new ValidationResult(ErrorMessage = "Date of event must be greater than current date");
             }
 
             return ValidationResult.Success;

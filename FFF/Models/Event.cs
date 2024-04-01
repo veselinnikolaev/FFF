@@ -16,7 +16,8 @@ namespace FFF.Models
 
 		[Required(ErrorMessage = "Date is required")]
 		[DataType(DataType.DateTime)]
-		[DateGreaterThanNow(ErrorMessage = "Date of Event must be greater than current date")]
+		[DateGreaterThanNow]
+		[AlreadyScheduledDate]
 		[Display(Name = "Date of Event")]
 		public DateTime Date { get; set; }
 
@@ -38,9 +39,8 @@ namespace FFF.Models
 
 		[NotMapped]
 		public string ViewData { get { return SingerName + " | " + TicketPrice + "$" + " - " + Date;} }
-		public ICollection<Employee> Employees { get; set; }
 		// many to many
-        public ICollection<EmployeeEvent> EmployeeEvents { get; set; }
+		public ICollection<Employee> Employees { get; set; }
 		// one to many
         public virtual ICollection<Reservation> Reservations { get; set; }
 	}

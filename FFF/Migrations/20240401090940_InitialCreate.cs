@@ -45,21 +45,21 @@ namespace FFF.Migrations
                 name: "EmployeeEvent",
                 columns: table => new
                 {
-                    EventId = table.Column<long>(type: "bigint", nullable: false),
-                    EmployeeId = table.Column<long>(type: "bigint", nullable: false)
+                    EmployeesId = table.Column<long>(type: "bigint", nullable: false),
+                    EventsId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EmployeeEvent", x => new { x.EventId, x.EmployeeId });
+                    table.PrimaryKey("PK_EmployeeEvent", x => new { x.EmployeesId, x.EventsId });
                     table.ForeignKey(
-                        name: "FK_EmployeeEvent_Employees_EmployeeId",
-                        column: x => x.EmployeeId,
+                        name: "FK_EmployeeEvent_Employees_EmployeesId",
+                        column: x => x.EmployeesId,
                         principalTable: "Employees",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_EmployeeEvent_Events_EventId",
-                        column: x => x.EventId,
+                        name: "FK_EmployeeEvent_Events_EventsId",
+                        column: x => x.EventsId,
                         principalTable: "Events",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -88,9 +88,9 @@ namespace FFF.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_EmployeeEvent_EmployeeId",
+                name: "IX_EmployeeEvent_EventsId",
                 table: "EmployeeEvent",
-                column: "EmployeeId");
+                column: "EventsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reservations_EventId",

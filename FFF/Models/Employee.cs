@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FFF.Validation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -25,6 +26,7 @@ namespace FFF.Models
 		
 		[Required(ErrorMessage = "Date of Birth is required")]
 		[DataType(DataType.Date)]
+		[DateAgeGreaterThan18]
 		[Display(Name = "Date of Birth")]
 		public DateTime BirthDate { get; set; }
 		
@@ -43,8 +45,7 @@ namespace FFF.Models
 
 		[NotMapped]
 		public string ViewData { get { return FirstName + " " + LastName + " - " + Position.ToString(); } }
-		public ICollection<Event> Events { get; set; }
 		// many to many
-        public ICollection<EmployeeEvent> EmployeeEvents { get; set; }
+		public ICollection<Event> Events { get; set; }
 	}
 }
