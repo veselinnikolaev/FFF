@@ -40,8 +40,8 @@ namespace FFF.Models
 		[NotMapped]
 		public string ViewData { get { return SingerName + " | " + TicketPrice + "$" + " - " + Date;} }
 		// many to many
-		public ICollection<Employee> Employees { get; set; }
+		public ICollection<Employee> Employees { get; } = new List<Employee>();
 		// one to many
-        public virtual ICollection<Reservation> Reservations { get; set; }
+        public virtual ICollection<Reservation> Reservations { get; } = new List<Reservation>();
 	}
 }

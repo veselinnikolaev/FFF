@@ -54,16 +54,15 @@ namespace FFF.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Date,SingerName,TicketPrice,Description")] Event @event, List<long> employeeIds)
+        public async Task<IActionResult> Create([Bind("Id,Date,SingerName,TicketPrice,Description")] Event @event, List<long> employees)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(@event);
-
-                if (employeeIds != null)
+                if (employees != null)
                 {
                     // Retrieve the corresponding employees and add them to the event
-                    foreach (var employeeId in employeeIds)
+                    foreach (var employeeId in employees)
                     {
                         var employee = await _context.Employees.FindAsync(employeeId);
                         if (employee != null)
@@ -104,7 +103,7 @@ namespace FFF.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Date,SingerName,TicketPrice,Description")] Event @event, List<long> employeeIds)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Date,SingerName,TicketPrice,Description")] Event @event, List<long> employees)
         {
             if (id != @event.Id)
             {
@@ -128,16 +127,16 @@ namespace FFF.Controllers
                     // Remove employees that are no longer selected
                     foreach (var employee in originalEvent.Employees.ToList())
                     {
-                        if (employeeIds == null || !employeeIds.Contains(employee.Id))
+                        if (employees == null || !employees.Contains(employee.Id))
                         {
                             originalEvent.Employees.Remove(employee);
                         }
                     }
 
                     // Add new employees selected
-                    if (employeeIds != null)
+                    if (employees != null)
                     {
-                        foreach (var employeeId in employeeIds)
+                        foreach (var employeeId in employees)
                         {
                             if (!originalEvent.Employees.Any(e => e.Id == employeeId))
                             {
@@ -165,7 +164,7 @@ namespace FFF.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Employees"] = new MultiSelectList(_context.Employees, "Id", "ViewData", employeeIds);
+            ViewData["Employees"] = new MultiSelectList(_context.Employees, "Id", "ViewData", employees);
             return View(@event);
         }
 

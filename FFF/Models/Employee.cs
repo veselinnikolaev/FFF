@@ -46,6 +46,6 @@ namespace FFF.Models
 		[NotMapped]
 		public string ViewData { get { return FirstName + " " + LastName + " - " + Position.ToString(); } }
 		// many to many
-		public ICollection<Event> Events { get; set; }
+		public ICollection<Event> Events { get; } = new List<Event>();
 	}
 }
