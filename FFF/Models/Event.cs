@@ -20,7 +20,7 @@ namespace FFF.Models
 		[AlreadyScheduledDate]
 		[Display(Name = "Date of Event")]
 		public DateTime Date { get; set; }
-
+	
 		[Required(ErrorMessage = "First Name is required")]
 		[StringLength(50, ErrorMessage = "Singer Name cannot be longer than 50 characters")]
 		[Display(Name = "Singer Name")]

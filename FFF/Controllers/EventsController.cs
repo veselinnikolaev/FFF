@@ -54,7 +54,7 @@ namespace FFF.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Date,SingerName,TicketPrice,Description")] Event @event, List<long> employees)
+        public async Task<IActionResult> Create([Bind("Date,SingerName,TicketPrice,Description")] Event @event, List<long> employees)
         {
             if (ModelState.IsValid)
             {
@@ -114,15 +114,20 @@ namespace FFF.Controllers
             {
                 try
                 {
-                    var originalEvent = await _context.Events.Include(e => e.Employees).FirstOrDefaultAsync(e => e.Id == @event.Id);
+                    var originalEvent = await _context.Events
+                        .Include(e => e.Employees)
+                        .FirstOrDefaultAsync(e => e.Id == @event.Id);
 
                     if (originalEvent == null)
                     {
                         return NotFound();
                     }
 
-                    // Update the event properties in the context
-                    _context.Update(@event);
+                    // Update properties of the originalEvent entity
+                    originalEvent.Date = @event.Date;
+                    originalEvent.SingerName = @event.SingerName;
+                    originalEvent.TicketPrice = @event.TicketPrice;
+                    originalEvent.Description = @event.Description;
 
                     // Remove employees that are no longer selected
                     foreach (var employee in originalEvent.Employees.ToList())
@@ -167,6 +172,7 @@ namespace FFF.Controllers
             ViewData["Employees"] = new MultiSelectList(_context.Employees, "Id", "ViewData", employees);
             return View(@event);
         }
+
 
         // GET: Events/Delete/5
         public async Task<IActionResult> Delete(long? id)

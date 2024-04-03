@@ -15,8 +15,9 @@ namespace FFF.Validation
             // Convert the value to DateTime
             DateTime date = (DateTime)value;
 
-            // Check if there is any event scheduled on the provided date
-            var isDateScheduled = dbContext.Events.Any(e => e.Date.Date == date.Date);
+            long id = Convert.ToInt64(validationContext.ObjectInstance.GetType().GetProperty("Id").GetValue(validationContext.ObjectInstance, null));
+            // Check if there is any event scheduled on the provided date excluding the current event
+            var isDateScheduled = dbContext.Events.Any(e => e.Date.Date == date.Date && e.Id != id);
 
             if (isDateScheduled)
             {

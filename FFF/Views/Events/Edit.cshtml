@@ -4,56 +4,48 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h1 class="text-center">Edit Event</h1>
 
-<h4>Event</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Date" class="control-label"></label>
-                <input asp-for="Date" class="form-control" />
-                <span asp-validation-for="Date" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SingerName" class="control-label"></label>
-                <input asp-for="SingerName" class="form-control" />
-                <span asp-validation-for="SingerName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TicketPrice" class="control-label"></label>
-                <input asp-for="TicketPrice" class="form-control" />
-                <span asp-validation-for="TicketPrice" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Employees" class="control-label"></label>
-                <select asp-for="Employees" class="form-control" multiple>
-                    @foreach (var item in (IEnumerable<SelectListItem>)ViewData["Employees"])
-                    {
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="Date" class="control-label">Date:</label>
+                    <input asp-for="Date" class="form-control" />
+                    <span asp-validation-for="Date" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="SingerName" class="control-label">Singer Name:</label>
+                    <input asp-for="SingerName" class="form-control" />
+                    <span asp-validation-for="SingerName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="TicketPrice" class="control-label">Ticket Price:</label>
+                    <input asp-for="TicketPrice" class="form-control" />
+                    <span asp-validation-for="TicketPrice" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label">Description:</label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Employees" class="control-label">Employees:</label>
+                    <select asp-for="Employees" class="form-control" multiple>
+                        @foreach (var item in (IEnumerable<SelectListItem>)ViewData["Employees"])
+                        {
                         <option value="@item.Value">@item.Text</option>
-                    }
-                </select>
-                <span asp-validation-for="Employees" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+                        }
+                    </select>
+                    <span asp-validation-for="Employees" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
