@@ -19,6 +19,8 @@ namespace FFF.Data
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<User> User { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -39,6 +41,15 @@ namespace FFF.Data
             modelBuilder.Entity<Event>()
                 .HasMany(e => e.Employees)
                 .WithMany(e => e.Events);
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Roles)
+                .WithOne();
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Reservations)
+                .WithOne();
         }
+
     }
 }

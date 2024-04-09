@@ -32,6 +32,7 @@ namespace FFF.Models
 		
 		[Required(ErrorMessage = "Position is required")]
 		[EnumDataType(typeof(Positions))]
+		[DataType(DataType.Text)]
 		public Positions Position { get; set; }
 		
 		[Required(ErrorMessage = "Phone Number is required")]
