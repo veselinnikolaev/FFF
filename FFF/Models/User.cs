@@ -20,6 +20,7 @@ namespace FFF.Models
 		public string Password { get; set; }
 		[Required(ErrorMessage = "Confirm Password is required")]
 		[Compare("Password", ErrorMessage = "Password and Confirmation Password must match.")]
+		[NotMapped]
 		public string ConfirmPassword { get; set; }
 		[Required(ErrorMessage = "Email is required")]
 		[EmailAddress(ErrorMessage ="Email is incorrect")]

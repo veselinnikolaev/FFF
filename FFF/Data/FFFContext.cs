@@ -19,7 +19,7 @@ namespace FFF.Data
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<Employee> Employees { get; set; }
-        public DbSet<User> User { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
