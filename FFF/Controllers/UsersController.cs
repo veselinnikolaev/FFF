@@ -11,20 +11,21 @@ using Ninject;
 using FFF.Configurations;
 using FFF.Services;
 using Microsoft.AspNet.Identity;
+using System.Net.Mail;
 
 namespace FFF.Controllers
 {
 	public class UsersController : Controller
 	{
 		private readonly FFFContext _context;
-		private readonly EmailService _emailService;
+		private readonly EmailSender _emailSender;
 		private readonly Microsoft.AspNetCore.Identity.UserManager<User> _userManager;
 		private readonly Microsoft.AspNetCore.Identity.SignInManager<User> _signInManager;
 
-		public UsersController(FFFContext context, EmailService emailService, Microsoft.AspNetCore.Identity.UserManager<User> userManager, Microsoft.AspNetCore.Identity.SignInManager<User> signInManager)
+		public UsersController(FFFContext context, EmailSender emailSender, Microsoft.AspNetCore.Identity.UserManager<User> userManager, Microsoft.AspNetCore.Identity.SignInManager<User> signInManager)
 		{
 			_context = context;
-			_emailService = emailService;
+			_emailSender = emailSender;
 			_userManager = userManager;
 			_signInManager = signInManager;
 		}
@@ -82,25 +83,69 @@ namespace FFF.Controllers
 				await _context.SaveChangesAsync();
 				//return RedirectToAction(nameof(Index));
 				// Generate email confirmation token
+				var token = Guid.NewGuid().ToString();
 
-				var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-
-				// Build callback URL for email confirmation
-				var callbackUrl = Url.Action("ConfirmEmail", "Users", new { userId = user.Id, code }, protocol: HttpContext.Request.Scheme);
+				_context.UserTokens.Add(new UserToken { UserId = user.Id, Token = token, TokenType = "EmailConfirmation" });
+				_context.SaveChanges();
 
 				// Send confirmation email
-				await _emailService.SendAsync(new IdentityMessage
-				{
-					Destination = user.Email,
-					Subject = "Confirm your email",
-					Body = $"Please confirm your email by clicking <a href='{callbackUrl}'>here</a>"
-				});
+				SendConfirmationEmail(user.Email, token);
 
-				ViewBag.Message = "Check your email and confirm your account, you must be confirmed before you can log in.";
-
-				return View("Info");
+				return RedirectToAction("ConfirmationSent");
 			}
 			return View(user);
+		}
+
+		private void SendConfirmationEmail(string email, string token)
+		{
+			var callbackUrl = Url.Action("ConfirmEmail", "Account", new { email = email, token = token }, protocol: Request.Url.Scheme);
+			var message = new MailMessage("your_email@gmail.com", email, "Confirm your email", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+			message.IsBodyHtml = true;
+
+			var smtpClient = new SmtpClient();
+			smtpClient.Send(message);
+		}
+
+		public ActionResult ConfirmationSent()
+		{
+			return View();
+		}
+
+		public ActionResult ConfirmEmail(string email, string token)
+		{
+			// Find the user by email
+			var user = _context.Users.FirstOrDefault(u => u.Email == email);
+
+			if (user != null)
+			{
+				// Find the token in the database
+				var userToken = _context.UserTokens.FirstOrDefault(t => t.UserId == user.Id && t.Token == token && t.TokenType == "EmailConfirmation");
+
+				if (userToken != null)
+				{
+					// Confirm the email by setting IsEmailConfirmed to true
+					user.EmailConfirmed = true;
+					_context.SaveChanges();
+
+					// Optionally, sign in the user
+					// SignInManager.SignIn(user, isPersistent: false, rememberBrowser: false);
+
+					return RedirectToAction("EmailConfirmed", "Account");
+				}
+			}
+
+			// If confirmation fails, show an error message
+			return RedirectToAction("ConfirmationFailed", "Account");
+		}
+
+		public ActionResult EmailConfirmed()
+		{
+			return View();
+		}
+
+		public ActionResult ConfirmationFailed()
+		{
+			return View();
 		}
 
 		public IActionResult LogIn()

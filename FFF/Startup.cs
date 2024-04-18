@@ -32,9 +32,8 @@ namespace FFF
 			services.AddDbContext<FFFContext>(options =>
 					options.UseSqlServer(Configuration.GetConnectionString("FFFContext")));
 
-			services.AddScoped<IIdentityMessageService, EmailService>();
-
-			services.AddRazorPages();
+			services.AddTransient<IEmailSender, EmailSender>();
+			services.Configure<AuthMessageSenderOptions>(builder.Configuration);
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
