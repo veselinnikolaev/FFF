@@ -19,15 +19,11 @@ namespace FFF.Controllers
 	{
 		private readonly FFFContext _context;
 		private readonly EmailSender _emailSender;
-		private readonly Microsoft.AspNetCore.Identity.UserManager<User> _userManager;
-		private readonly Microsoft.AspNetCore.Identity.SignInManager<User> _signInManager;
 
 		public UsersController(FFFContext context, EmailSender emailSender, Microsoft.AspNetCore.Identity.UserManager<User> userManager, Microsoft.AspNetCore.Identity.SignInManager<User> signInManager)
 		{
 			_context = context;
 			_emailSender = emailSender;
-			_userManager = userManager;
-			_signInManager = signInManager;
 		}
 
 		// GET: Users
@@ -37,7 +33,7 @@ namespace FFF.Controllers
 		}
 
 		// GET: Users/Details/5
-		public async Task<IActionResult> Details(long? id)
+		public async Task<IActionResult> Details(string? id)
 		{
 			if (id == null)
 			{
@@ -45,7 +41,7 @@ namespace FFF.Controllers
 			}
 
 			var user = await _context.Users
-				.FirstOrDefaultAsync(m => m.Id == id);
+				.FirstOrDefaultAsync(u => u.Id.Equals(id));
 			if (user == null)
 			{
 				return NotFound();
@@ -68,12 +64,12 @@ namespace FFF.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				Role userRole = await _context.Roles.FirstAsync(r => r.Authority.Equals("User"));
+				Role userRole = await _context.Roles.FirstAsync(r => r.Name.Equals(Authorities.User.ToString()));
 				user.Roles.Add(userRole);
 				if (!_context.Users.Any())
 				{
-					Role rootRole = await _context.Roles.FirstAsync(r => r.Authority.Equals("Root"));
-					Role adminRole = await _context.Roles.FirstAsync(r => r.Authority.Equals("Admin"));
+					Role rootRole = await _context.Roles.FirstAsync(r => r.Name.Equals(Authorities.Root.ToString()));
+					Role adminRole = await _context.Roles.FirstAsync(r => r.Name.Equals(Authorities.Root.ToString()));
 					user.Roles.Add(rootRole);
 					user.Roles.Add(adminRole);
 				}
@@ -85,7 +81,14 @@ namespace FFF.Controllers
 				// Generate email confirmation token
 				var token = Guid.NewGuid().ToString();
 
-				_context.UserTokens.Add(new UserToken { UserId = user.Id, Token = token, TokenType = "EmailConfirmation" });
+				UserToken userToken = new()
+				{
+					Token = token,
+					TokenType = "EmailConfirmation",
+					CreatedAt = DateTime.Now,
+					User = user
+				};
+				_context.UserTokens.Add(userToken);
 				_context.SaveChanges();
 
 				// Send confirmation email
@@ -98,7 +101,7 @@ namespace FFF.Controllers
 
 		private void SendConfirmationEmail(string email, string token)
 		{
-			var callbackUrl = Url.Action("ConfirmEmail", "Account", new { email = email, token = token }, protocol: Request.Url.Scheme);
+			var callbackUrl = Url.Action("ConfirmEmail", "Account", new { email = email, token = token }, protocol: Request.Scheme);
 			var message = new MailMessage("your_email@gmail.com", email, "Confirm your email", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 			message.IsBodyHtml = true;
 
@@ -119,7 +122,7 @@ namespace FFF.Controllers
 			if (user != null)
 			{
 				// Find the token in the database
-				var userToken = _context.UserTokens.FirstOrDefault(t => t.UserId == user.Id && t.Token == token && t.TokenType == "EmailConfirmation");
+				var userToken = _context.UserTokens.FirstOrDefault(t => t.User.Id == user.Id && t.Token == token && t.TokenType == "EmailConfirmation");
 
 				if (userToken != null)
 				{
@@ -157,7 +160,7 @@ namespace FFF.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				User loggedUser = await _context.Users.FirstOrDefaultAsync(u => u.Username.Equals(user.Username) &&
+				User loggedUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName.Equals(user.UserName) &&
 				StringEncryptor.DecryptString(u.Password).Equals(user.Password));
 				if (loggedUser != null)
 				{
@@ -188,9 +191,9 @@ namespace FFF.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(long id, [Bind("Id,Username,Password,ConfirmPassword,Email")] User user)
+		public async Task<IActionResult> Edit(string id, [Bind("Id,Username,Password,ConfirmPassword,Email")] User user)
 		{
-			if (id != user.Id)
+			if (!id.Equals(user.Id))
 			{
 				return NotFound();
 			}
@@ -219,7 +222,7 @@ namespace FFF.Controllers
 		}
 
 		// GET: Users/Delete/5
-		public async Task<IActionResult> Delete(long? id)
+		public async Task<IActionResult> Delete(string? id)
 		{
 			if (id == null)
 			{
@@ -227,7 +230,7 @@ namespace FFF.Controllers
 			}
 
 			var user = await _context.Users
-				.FirstOrDefaultAsync(m => m.Id == id);
+				.FirstOrDefaultAsync(m => m.Id.Equals(id));
 			if (user == null)
 			{
 				return NotFound();
@@ -247,9 +250,9 @@ namespace FFF.Controllers
 			return RedirectToAction(nameof(Index));
 		}
 
-		private bool UserExists(long id)
+		private bool UserExists(string id)
 		{
-			return _context.Users.Any(e => e.Id == id);
+			return _context.Users.Any(e => e.Id.Equals(id));
 		}
 	}
 }

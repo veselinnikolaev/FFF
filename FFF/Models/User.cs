@@ -28,7 +28,7 @@ namespace FFF.Models
 		[NotMapped]
 		public string ConfirmPassword { get; set; }
 		public bool IsActive { get; set; } = true;
-		public virtual ICollection<IdentityUserRole<string>> Roles { get; } = new List<IdentityUserRole<string>>();
+		public virtual ICollection<Role> Roles { get; } = new List<Role>();
 		public ICollection<Reservation> Reservations { get; } = new List<Reservation>();
 	}
 }

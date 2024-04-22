@@ -11,8 +11,6 @@ namespace FFF.Models
         [Key]
 		public int Id { get; set; }
 
-        public string UserId { get; set; }  // Foreign key to ApplicationUser
-
         public string Token { get; set; }
 
         public string TokenType { get; set; }  // E.g., "EmailConfirmation"

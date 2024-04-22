@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace FFF.Data
 {
-	public class FFFContext : IdentityDbContext<User, Role, string>
+	public class FFFContext : DbContext
 
 	{
 		public FFFContext(DbContextOptions<FFFContext> options)
@@ -23,6 +23,7 @@ namespace FFF.Data
 		public DbSet<Employee> Employees { get; set; }
 		public DbSet<User> Users { get; set; }
 		public DbSet<Role> Roles { get; set; }
+		public DbSet<UserToken> UserTokens { get; set; }
 
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -53,19 +54,13 @@ namespace FFF.Data
 				.HasMany(u => u.Reservations)
 				.WithOne();
 
-			modelBuilder.Entity<IdentityUserRole<string>>()
-			.HasKey(ur => new { ur.UserId, ur.RoleId });
+			modelBuilder.Entity<User>()
+				.HasMany(u => u.Roles)
+				.WithMany(r => r.Users);
 
-			modelBuilder.Entity<IdentityUserRole<string>>()
-				.HasOne(ur => ur.User)
-				.WithMany(u => u.UserRoles)
-				.HasForeignKey(ur => ur.UserId);
-
-			modelBuilder.Entity<IdentityUserRole<string>>()
-				.HasOne(ur => ur.Role)
-				.WithMany(r => r.UserRoles)
-				.HasForeignKey(ur => ur.RoleId);
+			modelBuilder.Entity<UserToken>()
+				.HasOne(ut => ut.User)
+				.WithOne();
 		}
-
 	}
 }

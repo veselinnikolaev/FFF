@@ -11,9 +11,6 @@ namespace FFF.Models
 	[Table("Roles")]
 	public class Role : IdentityRole
 	{
-		[EnumDataType(typeof(Authorities))]
-		[DataType(DataType.Text)]
-		public Authorities Authority { get; set; }
-		public ICollection<IdentityUserRole<string>> UserRoles { get; set; } = new List<IdentityUserRole<string>>();
+		public ICollection<User> Users { get; } = new List<User>();
 	}
 }
