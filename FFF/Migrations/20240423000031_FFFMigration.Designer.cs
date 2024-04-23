@@ -4,14 +4,16 @@ using FFF.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FFF.Migrations
 {
     [DbContext(typeof(FFFContext))]
-    partial class FFFContextModelSnapshot : ModelSnapshot
+    [Migration("20240423000031_FFFMigration")]
+    partial class FFFMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

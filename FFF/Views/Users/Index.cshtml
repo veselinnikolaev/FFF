@@ -1,4 +1,4 @@
-﻿@model IEnumerable<FFF.Models.User>
+﻿@model IEnumerable<User>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,41 +13,36 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Username)
+                @Html.DisplayNameFor(model => model.UserName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Password)
+                @Html.DisplayNameFor(model => model.Email.Substring(0, 3) + new string('*', 5) + model.Email.Substring(model.Email.IndexOf('@')))
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ConfirmPassword)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
+                @Html.DisplayNameFor(model => model.PhoneNumber.Substring(0, 3) + new string('*', 5))
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Username)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Password)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ConfirmPassword)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email.Substring(0, 3) + new string('*', 5) + item.Email.Substring(item.Email.IndexOf('@')))
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PhoneNumber.Substring(0, 3) + new string('*', 5))
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

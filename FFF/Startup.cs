@@ -9,9 +9,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using FFF.Data;
-using Microsoft.AspNet.Identity;
-using FFF.Services;
 using FFF.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace FFF
 {
@@ -32,12 +31,11 @@ namespace FFF
 			services.AddDbContext<FFFContext>(options =>
 					options.UseSqlServer(Configuration.GetConnectionString("FFFContext")));
 
-			services.AddTransient<IEmailSender, EmailSender>();
-			services.Configure<AuthMessageSenderOptions>(builder.Configuration);
+			services.AddRazorPages();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+		public async void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
 			if (env.IsDevelopment())
 			{
@@ -45,7 +43,9 @@ namespace FFF
 				using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
 				{
 					var dbContext = scope.ServiceProvider.GetService<FFFContext>();
-					dbContext.Database.Migrate();
+					await dbContext.Database.MigrateAsync();
+					var identityContext = scope.ServiceProvider.GetService<FFFContext>();
+					await identityContext.Database.MigrateAsync();
 					// Add data seeding code here if needed
 				}
 			}
@@ -64,6 +64,21 @@ namespace FFF
 					name: "default",
 					pattern: "{controller=Home}/{action=Index}/{id?}");
 			});
+
+			using (var scope = app.ApplicationServices.CreateScope())
+			{
+				var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+				var roles = new[] { "User", "Admin", "Root" };
+
+				foreach (var role in roles)
+				{
+					if(!await roleManager.RoleExistsAsync(role))
+					{
+						await roleManager.CreateAsync(new IdentityRole(role));
+					}
+				}
+			}
 		}
 	}
 }
