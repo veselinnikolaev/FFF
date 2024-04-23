@@ -18,7 +18,7 @@ namespace FFF.Areas.Identity
             {
                 services.AddDbContext<FFFContext>(options =>
                     options.UseSqlServer(
-                        context.Configuration.GetConnectionString("HomeDb")));
+                        context.Configuration.GetConnectionString("FFFContext")));
 
                 services.AddIdentity<User, IdentityRole>(options =>
                 {

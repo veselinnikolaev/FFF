@@ -44,8 +44,6 @@ namespace FFF
 				{
 					var dbContext = scope.ServiceProvider.GetService<FFFContext>();
 					await dbContext.Database.MigrateAsync();
-					var identityContext = scope.ServiceProvider.GetService<FFFContext>();
-					await identityContext.Database.MigrateAsync();
 					// Add data seeding code here if needed
 				}
 			}
@@ -73,7 +71,7 @@ namespace FFF
 
 				foreach (var role in roles)
 				{
-					if(!await roleManager.RoleExistsAsync(role))
+					if (!await roleManager.RoleExistsAsync(role))
 					{
 						await roleManager.CreateAsync(new IdentityRole(role));
 					}
