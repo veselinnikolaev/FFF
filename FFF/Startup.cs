@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using FFF.Data;
 using FFF.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace FFF
 {
@@ -26,12 +27,33 @@ namespace FFF
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddControllersWithViews();
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+            });
+
+            services.AddControllersWithViews();
 
 			services.AddDbContext<FFFContext>(options =>
 					options.UseSqlServer(Configuration.GetConnectionString("FFFContext")));
 
-			services.AddRazorPages();
+            services.AddAuthorization(config =>
+            {
+				config.AddPolicy("RequireRootRole",
+					policy => policy.RequireRole("Root"));
+                config.AddPolicy("RequireAdminRole",
+                    policy => policy.RequireRole("Admin"));
+                config.AddPolicy("RequireRootOrAdminRole",
+                    policy => policy.RequireRole("Root").RequireRole("Admin"));
+                config.AddPolicy("RequireUserRole",
+                    policy => policy.RequireRole("User"));
+            });
+
+            services.AddRazorPages(options =>
+			{
+				options.Conventions.AuthorizePage("/Privacy", "RequireRootOrAdminRole");
+			});
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,6 +65,7 @@ namespace FFF
 				using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
 				{
 					var dbContext = scope.ServiceProvider.GetService<FFFContext>();
+                    await dbContext.Database.EnsureCreatedAsync();
 					await dbContext.Database.MigrateAsync();
 					// Add data seeding code here if needed
 				}
@@ -54,13 +77,17 @@ namespace FFF
 
 			app.UseStaticFiles();
 			app.UseRouting();
-			app.UseAuthorization();
+            app.UseCookiePolicy();
+            app.UseAuthorization();
+			app.UseAuthentication();
 
 			app.UseEndpoints(endpoints =>
 			{
 				endpoints.MapControllerRoute(
 					name: "default",
 					pattern: "{controller=Home}/{action=Index}/{id?}");
+
+				endpoints.MapRazorPages();
 			});
 
 			using (var scope = app.ApplicationServices.CreateScope())
