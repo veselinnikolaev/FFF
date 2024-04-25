@@ -50,9 +50,16 @@ namespace FFF
                     policy => policy.RequireRole("User"));
             });
 
+			services.AddMvc();
             services.AddRazorPages(options =>
 			{
-				options.Conventions.AuthorizePage("/Privacy", "RequireRootOrAdminRole");
+				options.Conventions.AllowAnonymousToFolder("/Home");
+				options.Conventions.AllowAnonymousToFolder("/Shared");
+				options.Conventions.AllowAnonymousToAreaFolder("Identity", "/Pages");
+				options.Conventions.AuthorizeFolder("/Reservations");
+				options.Conventions.AuthorizeFolder("/Employees", "RequireRootOrAdminRole");
+				options.Conventions.AuthorizeFolder("/Events", "RequireRootOrAdminRole");
+				options.Conventions.AuthorizeFolder("/Users", "RequireRootOrAdminRole");
 			});
 		}
 
