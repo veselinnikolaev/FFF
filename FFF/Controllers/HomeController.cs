@@ -1,5 +1,6 @@
 ﻿using FFF.Data;
 using FFF.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace FFF.Controllers
 {
+	[AllowAnonymous]
 	public class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
@@ -24,7 +26,7 @@ namespace FFF.Controllers
 			return View();
 		}
 
-		public IActionResult Privacy()
+		public IActionResult Contact()
 		{
 			return View();
 		}

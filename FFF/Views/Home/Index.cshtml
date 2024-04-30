@@ -80,10 +80,13 @@
 <body>
     <div class="text-center">
         <h1 class="display-4">Welcome</h1>
-        <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <p><a href="/Identity/Account/Register">Register</a> if you don't have an account. <a href="/Identity/Account/Login">Log in</a> if you already have an existing one.</p>
+        }
     </div>
     <footer>
-        &copy; 2024 Your Discotheque FFF App
+        &copy; 2024 FFF Your Discotheque App
     </footer>
 </body>
 </html>

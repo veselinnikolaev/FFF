@@ -7,23 +7,35 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FFF.Data;
 using FFF.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace FFF.Controllers
 {
+    [Authorize]
     public class ReservationsController : Controller
     {
         private readonly FFFContext _context;
+        private readonly User loggedInUser;
 
         public ReservationsController(FFFContext context)
         {
             _context = context;
+            loggedInUser = _context.Users.FirstAsync(u => u.UserName.Equals(User.Identity.Name)).Result;
         }
 
         // GET: Reservations
         public async Task<IActionResult> Index()
         {
-            var fFFContext = _context.Reservations.Include(r => r.Event);
-            return View(await fFFContext.ToListAsync());
+            if (User.IsInRole("RequireRootOrAdminRole"))
+            {
+                return View(await _context.Reservations.Include(r => r.Event).ToListAsync());
+            }
+            else
+            {
+                return View(await _context.Reservations.Include(r => r.Event).Where(r => r.Users.Contains(loggedInUser)).ToListAsync());
+            }
         }
 
         // GET: Reservations/Details/5
@@ -36,7 +48,7 @@ namespace FFF.Controllers
 
             var reservation = await _context.Reservations
                 .Include(r => r.Event)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(r => r.Id == id);
             if (reservation == null)
             {
                 return NotFound();
@@ -62,10 +74,13 @@ namespace FFF.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(reservation);
-                
+
                 var @event = await _context.Events.FindAsync(reservation.EventId);
                 @event.Reservations.Add(reservation);
-                
+
+                reservation.Users.Add(loggedInUser);
+                loggedInUser.Reservations.Add(reservation);
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -150,7 +165,7 @@ namespace FFF.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ReservationExists(reservation.Id))
+                    if (!_context.Reservations.Any(e => e.Id == id))
                     {
                         return NotFound();
                     }
@@ -191,15 +206,15 @@ namespace FFF.Controllers
         {
             var reservation = await _context.Reservations.FindAsync(id);
             _context.Reservations.Remove(reservation);
+
             var @event = await _context.Events.FindAsync(reservation.EventId);
             @event.Reservations.Remove(reservation);
+
+            reservation.Users.Remove(loggedInUser);
+            loggedInUser.Reservations.Remove(reservation);
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ReservationExists(long id)
-        {
-            return _context.Reservations.Any(e => e.Id == id);
         }
     }
 }

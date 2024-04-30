@@ -48,7 +48,7 @@ namespace FFF.Data
 
             builder.Entity<User>()
 				.HasMany(u => u.Reservations)
-				.WithOne();
+				.WithMany(r => r.Users);
         }
     }
 }

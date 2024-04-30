@@ -121,14 +121,9 @@ namespace FFF.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("EventId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Reservations");
                 });
@@ -339,6 +334,21 @@ namespace FFF.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("ReservationUser", b =>
+                {
+                    b.Property<long>("ReservationsId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("UsersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ReservationsId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("ReservationUser");
+                });
+
             modelBuilder.Entity("EmployeeEvent", b =>
                 {
                     b.HasOne("FFF.Models.Employee", null)
@@ -361,10 +371,6 @@ namespace FFF.Migrations
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("FFF.Models.User", null)
-                        .WithMany("Reservations")
-                        .HasForeignKey("UserId");
 
                     b.Navigation("Event");
                 });
@@ -420,12 +426,22 @@ namespace FFF.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FFF.Models.Event", b =>
+            modelBuilder.Entity("ReservationUser", b =>
                 {
-                    b.Navigation("Reservations");
+                    b.HasOne("FFF.Models.Reservation", null)
+                        .WithMany()
+                        .HasForeignKey("ReservationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FFF.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("FFF.Models.User", b =>
+            modelBuilder.Entity("FFF.Models.Event", b =>
                 {
                     b.Navigation("Reservations");
                 });
