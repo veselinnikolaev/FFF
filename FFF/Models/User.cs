@@ -11,6 +11,9 @@ namespace FFF.Models
     [Table("Users")]
     public class User : IdentityUser
     {
+        public User() : base()
+        {
+        }
         public User(string userName) : base(userName)
         {
         }

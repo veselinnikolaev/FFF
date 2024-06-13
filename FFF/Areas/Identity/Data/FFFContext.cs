@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace FFF.Data
+namespace FFF.Areas.Identity.Data
 {
     public class FFFContext : IdentityDbContext<User>
     {
@@ -19,8 +19,8 @@ namespace FFF.Data
         }
 
         public DbSet<Reservation> Reservations { get; set; }
-		public DbSet<Event> Events { get; set; }
-		public DbSet<Employee> Employees { get; set; }
+        public DbSet<Event> Events { get; set; }
+        public DbSet<Employee> Employees { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -29,26 +29,26 @@ namespace FFF.Data
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
             builder.Entity<Event>()
-				.Property(e => e.TicketPrice)
-				.HasColumnType("decimal(18, 2)");
+                .Property(e => e.TicketPrice)
+                .HasColumnType("decimal(18, 2)");
 
-			builder.Entity<Employee>()
-				.Property(e => e.BirthDate)
-				.HasColumnType("date");
+            builder.Entity<Employee>()
+                .Property(e => e.BirthDate)
+                .HasColumnType("date");
 
-			builder.Entity<Reservation>()
-				.HasOne(r => r.Event)
-				.WithMany(e => e.Reservations)
-				.HasForeignKey(r => r.EventId)
-				.IsRequired();
+            builder.Entity<Reservation>()
+                .HasOne(r => r.Event)
+                .WithMany(e => e.Reservations)
+                .HasForeignKey(r => r.EventId)
+                .IsRequired();
 
-			builder.Entity<Event>()
-				.HasMany(e => e.Employees)
-				.WithMany(e => e.Events);
+            builder.Entity<Event>()
+                .HasMany(e => e.Employees)
+                .WithMany(e => e.Events);
 
             builder.Entity<User>()
-				.HasMany(u => u.Reservations)
-				.WithMany(r => r.Users);
+                .HasMany(u => u.Reservations)
+                .WithMany(r => r.Users);
         }
     }
 }

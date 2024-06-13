@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using FFF.Data;
 using FFF.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using FFF.Areas.Identity.Data;
 
 namespace FFF.Controllers
 {
+    [Authorize]
 	public class ReservationsController : Controller
 	{
 		private readonly FFFContext _context;
@@ -25,8 +27,13 @@ namespace FFF.Controllers
 		// GET: Reservations
 		public async Task<IActionResult> Index()
 		{
-			var fFFContext = _context.Reservations.Include(r => r.Event);
-			return View(await fFFContext.ToListAsync());
+			var reservations = _context.Reservations;
+			if (!User.IsInRole("Admin"))
+			{
+				User user = await _userManager.FindByNameAsync(_userManager.GetUserName(User));
+				return View(await reservations.Where(r => r.Users.Contains(user)).Include(r => r.Event).ToListAsync());
+			}
+			return View(await reservations.Include(r => r.Event).ToListAsync());
 		}
 
 		// GET: Reservations/Details/5

@@ -10,7 +10,11 @@ namespace FFF.Models
 	[Table("Reservations")]
 	public class Reservation
 	{
-		[Key]
+        public Reservation()
+        {
+        }
+
+        [Key]
 		public long Id { get; set; }
 
 		[Required(ErrorMessage = "Name is required")]

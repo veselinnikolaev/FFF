@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using FFF.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FFF.Areas.Identity.Pages.Account
 {
@@ -64,7 +65,7 @@ namespace FFF.Areas.Identity.Pages.Account
             [Required]
             [Phone]
             [Display(Name = "Phone number")]
-            public string PhoneNumber {get; set; }
+            public string PhoneNumber { get; set; }
 
             [Required]
             [EmailAddress]
@@ -96,12 +97,28 @@ namespace FFF.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new User(Input.UserName) { FirstName = Input.FirstName, LastName = Input.LastName,
-                    PhoneNumber = Input.PhoneNumber, Email = Input.Email };
+                var user = new User(Input.UserName)
+                {
+                    FirstName = Input.FirstName,
+                    LastName = Input.LastName,
+                    PhoneNumber = Input.PhoneNumber,
+                    Email = Input.Email
+                };
+
+                var hasAny = _userManager.Users.Any();
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    if (hasAny)
+                    {
+                        await _userManager.AddToRoleAsync(user, "User");
+                    }
+                    else
+                    {
+                        await _userManager.AddToRolesAsync(user, new List<string>() { "User", "Admin" });
+                    }
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));

@@ -11,7 +11,11 @@ namespace FFF.Models
 	[Table("Events")]
 	public class Event
 	{
-		[Key]
+        public Event()
+        {
+        }
+
+        [Key]
 		public long Id { get; set; }
 
 		[Required(ErrorMessage = "Date is required")]

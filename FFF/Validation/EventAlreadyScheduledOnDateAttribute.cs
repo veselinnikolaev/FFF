@@ -1,4 +1,4 @@
-﻿using FFF.Data;
+﻿using FFF.Areas.Identity.Data;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;

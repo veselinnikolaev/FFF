@@ -5,16 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using FFF.Data;
-using Ninject;
 using Microsoft.AspNetCore.Identity;
-using System.Net.Mail;
 using FFF.Models;
 using Microsoft.AspNetCore.Authorization;
 
 namespace FFF.Controllers
 {
-    [Authorize(Policy = "RequireRootOrAdminRole")]
+    [Authorize(Policy = "RequireAdminRole")]
     public class UsersController : Controller
     {
         private readonly UserManager<User> _userManager;
@@ -98,7 +95,7 @@ namespace FFF.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Username,Password,ConfirmPassword,Email,PhoneNumber")] User user)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,FirstName,LastName,UserName,Email,PhoneNumber")] User user)
         {
             if (!id.Equals(user.Id))
             {
@@ -109,7 +106,21 @@ namespace FFF.Controllers
             {
                 try
                 {
-                    await _userManager.UpdateAsync(user);
+                    var existingUser = await _userManager.FindByIdAsync(id);
+                    if (existingUser == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Update the properties of the existing user entity
+                    existingUser.FirstName = user.FirstName;
+                    existingUser.LastName = user.LastName;
+                    existingUser.UserName = user.UserName;
+                    existingUser.Email = user.Email;
+                    existingUser.PhoneNumber = user.PhoneNumber;
+
+                    // Use UpdateAsync method from UserManager to update the user
+                    await _userManager.UpdateAsync(existingUser);
                 }
                 catch (DbUpdateConcurrencyException)
                 {

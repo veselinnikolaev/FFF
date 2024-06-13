@@ -11,7 +11,11 @@ namespace FFF.Models
 	[Table("Employees")]
 	public class Employee
 	{
-		[Key]
+        public Employee()
+        {
+        }
+
+        [Key]
 		public long Id { get; set; }
 		
 		[Required(ErrorMessage = "First Name is required")]

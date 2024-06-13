@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using FFF.Data;
 using FFF.Models;
 using Microsoft.AspNetCore.Authorization;
+using FFF.Areas.Identity.Data;
 
 namespace FFF.Controllers
 {
-    [Authorize(Policy = "RequireRootOrAdminRole")]
+    [Authorize(Policy = "RequireAdminRole")]
     public class EventsController : Controller
     {
         private readonly FFFContext _context;

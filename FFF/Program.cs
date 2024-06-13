@@ -1,4 +1,4 @@
-using FFF.Data;
+using FFF.Areas.Identity.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace FFF
 {
-	public class Program
+    public class Program
 	{
 		public static void Main(string[] args)
 		{

@@ -1,5 +1,4 @@
-﻿using FFF.Data;
-using FFF.Models;
+﻿using FFF.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
