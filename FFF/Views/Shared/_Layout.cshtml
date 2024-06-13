@@ -22,12 +22,32 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Contact">Contact us</a>
                         </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Reservations" asp-action="Index">Reservation</a>
+                            </li>
+                        }
+                        @if (User.IsInRole("RequireRootOrAdminRole"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" id="adminDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Admin
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="adminDropdown">
+                                    <a class="dropdown-item" asp-area="" asp-controller="Events" asp-action="Index">Events</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Reservations" asp-action="Index">Reservations</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Employees" asp-action="Index">Employees</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
+                                </div>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
-            <partial name="_LoginPartial"/>
+            <partial name="_LoginPartial" />
         </nav>
     </header>
     <div class="container">

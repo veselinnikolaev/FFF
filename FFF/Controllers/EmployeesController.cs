@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FFF.Data;
 using FFF.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FFF.Controllers
 {
+    [Authorize(Policy = "RequireRootOrAdminRole")]
     public class EmployeesController : Controller
     {
         private readonly FFFContext _context;

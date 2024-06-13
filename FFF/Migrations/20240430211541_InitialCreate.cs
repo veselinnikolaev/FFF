@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FFF.Migrations
 {
-    public partial class FFFMigration : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -221,22 +221,39 @@ namespace FFF.Migrations
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Note = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    EventId = table.Column<long>(type: "bigint", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    EventId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Reservations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Reservations_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_Reservations_Events_EventId",
                         column: x => x.EventId,
                         principalTable: "Events",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ReservationUser",
+                columns: table => new
+                {
+                    ReservationsId = table.Column<long>(type: "bigint", nullable: false),
+                    UsersId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReservationUser", x => new { x.ReservationsId, x.UsersId });
+                    table.ForeignKey(
+                        name: "FK_ReservationUser_AspNetUsers_UsersId",
+                        column: x => x.UsersId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ReservationUser_Reservations_ReservationsId",
+                        column: x => x.ReservationsId,
+                        principalTable: "Reservations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -291,9 +308,9 @@ namespace FFF.Migrations
                 column: "EventId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reservations_UserId",
-                table: "Reservations",
-                column: "UserId");
+                name: "IX_ReservationUser_UsersId",
+                table: "ReservationUser",
+                column: "UsersId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -317,7 +334,7 @@ namespace FFF.Migrations
                 name: "EmployeeEvent");
 
             migrationBuilder.DropTable(
-                name: "Reservations");
+                name: "ReservationUser");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -327,6 +344,9 @@ namespace FFF.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Reservations");
 
             migrationBuilder.DropTable(
                 name: "Events");

@@ -33,5 +33,7 @@ namespace FFF.Models
 
 		// Many to One
         public Event Event { get; set; }
+
+		public ICollection<User> Users { get; } = new List<User>();
 	}
 }

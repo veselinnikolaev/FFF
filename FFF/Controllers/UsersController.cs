@@ -10,9 +10,11 @@ using Ninject;
 using Microsoft.AspNetCore.Identity;
 using System.Net.Mail;
 using FFF.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FFF.Controllers
 {
+    [Authorize(Policy = "RequireRootOrAdminRole")]
     public class UsersController : Controller
     {
         private readonly UserManager<User> _userManager;
